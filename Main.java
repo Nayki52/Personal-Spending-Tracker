@@ -1,7 +1,6 @@
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.text.html.HTMLDocument;
 
 class Main {
 
@@ -26,8 +25,55 @@ class Main {
 
     public static void showSpending() {
         for (int i = 0; i < spendings.size(); i++) {
+            System.out.println("index :" + i);
             spendings.get(i).ShowInfo();
             System.out.println("\n");
+        }
+    }
+
+    public static void removeSpending() {
+        if (spendings.isEmpty()) {
+            System.out.println("The list is empty. Nothing to remove.");
+            return;
+        }
+        System.out.println("\n--- Current Spendings ---");
+        showSpending();
+
+        System.out.print("Enter the index of the spending you want to remove: ");
+        int index = sc.nextInt();
+
+        if (index >= 0 && index < spendings.size()) {
+            spendings.remove(index);
+            System.out.println("Spending at index " + index + " successfully removed!");
+        } else {
+            System.out.println("Error: Invalid index! There is no spending with this index.");
+        }
+    }
+
+    public static void statisticsSpending() {
+        if (!spendings.isEmpty()) {
+            System.out.println("Statistics are not available. The list is empty.");
+
+            double totalSum = 0;
+            double maxAmount = 0.0;
+            String maxSpendingName = "";
+
+            for (int i = 0; i < spendings.size(); i++) {
+                Spending s = spendings.get(i);
+                totalSum += s.getAmount();
+
+                if (s.getAmount() > maxAmount) {
+                    maxAmount = s.getAmount();
+                    maxSpendingName = s.getName();
+                }
+            }
+            double averageSpending = totalSum / spendings.size();
+
+            System.out.println("\n=== Financial Statistics ===");
+            System.out.println("Number of spending" + spendings.size());
+            System.out.println("Total expenses:" + totalSum);
+            System.out.println("Average check: " + averageSpending);
+            System.out.println("Most expensive item: " + maxSpendingName + maxAmount);
         }
     }
 
@@ -50,11 +96,11 @@ class Main {
             } else if (choice == 2) {
                 showSpending();
             } else if (choice == 3) {
-
+                removeSpending();
             } else if (choice == 4) {
-
+                statisticsSpending();
             } else if (choice == 5) {
-                System.out.println("Good buye");
+                System.out.println("Good bye");
                 break;
             } else {
                 System.out.println("Invalid option. Choose a number from 1 to 5!");
