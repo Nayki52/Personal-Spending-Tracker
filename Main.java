@@ -1,11 +1,62 @@
 
 import java.util.ArrayList;
 import java.util.Scanner;
+//подключаем файл чтоби работать с фалом
+import java.io.File;
+// подключаем чтоби записивать фаил
+import java.io.FileWriter;
+// ловить ошибки при сохранении
+import java.io.IOException;
 
 class Main {
 
     public static ArrayList<Spending> spendings = new ArrayList<Spending>();
     public static Scanner sc = new Scanner(System.in);
+
+    public static String fileName = "Spendings.txt";
+
+    public static void saveSpendings() {
+        try {
+            FileWriter writer = new FileWriter(fileName);
+
+            for (int i = 0; i < spendings.size(); i++) {
+                Spending s = spendings.get(i);
+                writer.write(s.getName() + ";" + s.getCategory() + ";" + s.getAmount() + "\n");
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error while saving spendings");
+        }
+    }
+
+    public static void loadSpendings(){
+        try {
+            File file = new File(fileName);
+
+            if (!file.exists()) {
+                return;
+            }
+            else { 
+                Scanner fileScanner = new Scanner(file);
+                while(fileScanner.hasNextLine()) {
+                    String line = fileScanner.nextLine();
+
+                    String[] parts = line.split(";");
+
+                    if(parts.length == 3) {
+                        String name = parts[0];
+                        String category = parts[1];
+                        double amount = Double.parseDouble(parts[2]);
+                        Spending s = new Spending(name, category, amount);
+                        spendings.add(s);
+                    }
+                    }
+            }
+        } catch (Exception e) {
+        System.out.println("Error while loading spendings");
+        }
+    }
 
     public static void addSpending() {
         String name;
@@ -21,6 +72,7 @@ class Main {
 
         Spending spending = new Spending(name, category, amount);
         spendings.add(spending);
+        saveSpendings();
     }
 
     public static void showSpending() {
@@ -48,6 +100,7 @@ class Main {
         } else {
             System.out.println("Error: Invalid index! There is no spending with this index.");
         }
+        saveSpendings();
     }
 
     public static void statisticsSpending() {
@@ -88,6 +141,7 @@ class Main {
     }
 
     public static void main(String[] args) {
+        loadSpendings();
         while (true) {
             ShowMenu();
             int choice = sc.nextInt();
