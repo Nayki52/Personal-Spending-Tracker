@@ -63,12 +63,9 @@ class Main {
         String category = "";
         double amount = 0.0;
         sc.nextLine(); //Отшипивает символ от новой строки
-        System.out.print("Enter the name ");
-        name = sc.nextLine();
-        System.out.print("Enter the category ");
-        category = sc.nextLine();
-        System.out.print("Enter the ammount ");
-        amount = sc.nextDouble();
+        name = readtext("Enter the name ");
+        category = readtext("Enter the category ");
+        amount = readAmount("Enter the ammount ");
 
         Spending spending = new Spending(name, category, amount);
         spendings.add(spending);
@@ -105,7 +102,7 @@ class Main {
 
     public static void statisticsSpending() {
         if (!spendings.isEmpty()) {
-            System.out.println("Statistics are not available. The list is empty.");
+            
 
             double totalSum = 0;
             double maxAmount = 0.0;
@@ -127,6 +124,37 @@ class Main {
             System.out.println("Total expenses:" + totalSum);
             System.out.println("Average check: " + averageSpending);
             System.out.println("Most expensive item: " + maxSpendingName + maxAmount);
+        }
+        else {
+            System.out.println("Statistics are not available. The list is empty.");
+        }
+    }
+
+    public static String readtext(String messages) {
+        String text;
+        while(true) {
+            System.out.println(messages);
+            text = sc.nextLine();
+            if (!text.trim().isEmpty()) {
+                return text;
+            }
+            System.out.println("Input can't be empty, try again");
+        }
+    }
+    public static double readAmount(String message) {
+        while(true) {
+            System.out.println(message);
+            if(sc.hasNextDouble()) {
+               double amount = sc.nextDouble();
+               sc.nextLine();
+               if (amount > 0 && amount < 1000000) {
+                return amount;
+               } 
+            }
+            else {
+                System.out.println("Please enter valid amount");
+                sc.nextLine();
+            }
         }
     }
 
