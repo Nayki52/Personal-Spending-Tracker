@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.BoxLayout;
@@ -6,12 +7,17 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
+import java.io.File;
 
 class Main {
+    public static String fileName = "Spendings.txt";
+
+    public static ArrayList<Spending> spendings = new ArrayList<Spending>();
 
     public static Scanner sc = new Scanner(System.in);
 
@@ -30,7 +36,7 @@ class Main {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Personal-Spending-Tracker");
 
-        frame.setSize(500, 300);
+        frame.setSize(700, 500);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -55,28 +61,64 @@ class Main {
         buttonsPanel.add(removeButton);
         JButton statisticButton = new JButton("Statistics spending");
         buttonsPanel.add(statisticButton);
+        JButton loadButton = new JButton("Load spendings");
+        buttonsPanel.add(loadButton);
 
         frame.add(buttonsPanel, BorderLayout.SOUTH);
+        addButton.addActionListener(event -> {
+            // TO DO
+        });
+        removeButton.addActionListener(event -> {
+            int selectedIndex = spendingList.getSelectedIndex();
+            if (selectedIndex < 0 || selectedIndex >= spendings.size()) {
+                JOptionPane.showMessageDialog(frame, "Index out of bounderies", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
+                int result = JOptionPane.showConfirmDialog(frame, "Procied with delition?", "Confirmation",
+                        JOptionPane.YES_NO_OPTION);
+
+                // реакция на то, что пользователь выбрал в окне
+                if (result == JOptionPane.YES_OPTION) {
+                    spendings.remove(selectedIndex);
+                    listModel.remove(selectedIndex);
+                }
+            }
+        });
+        statisticButton.addActionListener(event -> {
+            // TO DO
+        });
+        loadButton.addActionListener(event -> {
+            try {
+                File file = new File(fileName);
+
+                if (!file.exists()) {
+                    JOptionPane.showMessageDialog(frame, "File " + fileName + " Doesnt exist", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                } else {
+                    Scanner fileScanner = new Scanner(file);
+                    while (fileScanner.hasNextLine()) {
+                        String line = fileScanner.nextLine();
+
+                        String[] parts = line.split(";");
+
+                        if (parts.length == 3) {
+                            String name = parts[0];
+                            String category = parts[1];
+                            double amount = Double.parseDouble(parts[2]);
+                            Spending s = new Spending(name, category, amount);
+                            listModel.addElement(s.toString());
+                            spendings.add(s);
+                        }
+
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Error while loading spendings");
+            }
+        });
         frame.setVisible(true);
 
-        service.loadSpendings();
-        while (true) {
-            ShowMenu();
-            int choice = sc.nextInt();
-            if (choice == 1) {
-                service.addSpending();
-            } else if (choice == 2) {
-                service.showSpending();
-            } else if (choice == 3) {
-                service.removeSpending();
-            } else if (choice == 4) {
-                service.statisticsSpending();
-            } else if (choice == 5) {
-                System.out.println("Good bye");
-                break;
-            } else {
-                System.out.println("Invalid option. Choose a number from 1 to 5!");
-            }
-        }
     }
 }

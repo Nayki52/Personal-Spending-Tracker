@@ -36,8 +36,14 @@ public class Spending {
     }
 
     void ShowInfo() {
+
         System.out.println("Name :" + name);
         System.out.println("Category :" + category);
         System.out.println("Amount :" + amount);
+    }
+
+    @Override
+    public String toString() {
+        return name + "/" + category + "/" + amount;
     }
 }
