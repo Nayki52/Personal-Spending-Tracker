@@ -10,8 +10,11 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.io.File;
 
 class Main {
@@ -66,13 +69,38 @@ class Main {
 
         frame.add(buttonsPanel, BorderLayout.SOUTH);
         addButton.addActionListener(event -> {
-            // TO DO
+            JFrame addPanel = new JFrame();
+
+            JLabel nameLabel = new JLabel("Name");
+            JTextField nameField = new JTextField();
+            JLabel categoryLabel = new JLabel("Category");
+            JTextField categoryField = new JTextField();
+            JLabel amountLabel = new JLabel("Amount");
+            JTextField amountField = new JTextField();
+            JButton okeyButton = new JButton("OK");
+            // TO Do action
+            JButton cancelButton = new JButton("Cancel");
+            // TO Do action
+
+            addPanel.setLayout(new GridLayout(4, 2));
+            addPanel.add(nameLabel);
+            addPanel.add(nameField);
+            addPanel.add(categoryLabel);
+            addPanel.add(categoryField);
+            addPanel.add(amountLabel);
+            addPanel.add(amountField);
+            addPanel.add(okeyButton);
+            addPanel.add(cancelButton);
+
+            addPanel.setSize(300, 200);
+
+            addPanel.setVisible(true);
         });
         removeButton.addActionListener(event -> {
             int selectedIndex = spendingList.getSelectedIndex();
             if (selectedIndex < 0 || selectedIndex >= spendings.size()) {
-                JOptionPane.showMessageDialog(frame, "Index out of bounderies", "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Make a selction first", "Selection neccessary",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             } else {
                 int result = JOptionPane.showConfirmDialog(frame, "Procied with delition?", "Confirmation",
