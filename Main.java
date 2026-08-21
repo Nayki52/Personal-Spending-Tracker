@@ -13,7 +13,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.io.File;
 
@@ -66,6 +65,8 @@ class Main {
         buttonsPanel.add(statisticButton);
         JButton loadButton = new JButton("Load spendings");
         buttonsPanel.add(loadButton);
+        JButton saveButton = new JButton("Save spendings");
+        buttonsPanel.add(saveButton);
 
         frame.add(buttonsPanel, BorderLayout.SOUTH);
         addButton.addActionListener(event -> {
@@ -78,9 +79,39 @@ class Main {
             JLabel amountLabel = new JLabel("Amount");
             JTextField amountField = new JTextField();
             JButton okeyButton = new JButton("OK");
-            // TO Do action
+
+            okeyButton.addActionListener(e -> {
+                String name = nameField.getText().trim();
+                String category = categoryField.getText().trim();
+                String amountText = amountField.getText().trim();
+
+                if (name.isEmpty() && category.isEmpty() && amountText.isEmpty()) {
+                    JOptionPane.showMessageDialog(addPanel, "Please fill in all fields", "Invalid input",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                try {
+                    double amount = Double.parseDouble(amountText);
+
+                    if (amount > 0) {
+                        Spending newSpending = new Spending(name, category, amount);
+                        spendings.add(newSpending);
+                        listModel.addElement(newSpending.toString());
+
+                        addPanel.dispose();
+                    }
+
+                } catch (NumberFormatException exception) {
+                    JOptionPane.showMessageDialog(addPanel, "Amount must be a valid number", "Invalid amount",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            });
+
             JButton cancelButton = new JButton("Cancel");
-            // TO Do action
+            cancelButton.addActionListener(e -> {
+                addPanel.dispose();
+            });
 
             addPanel.setLayout(new GridLayout(4, 2));
             addPanel.add(nameLabel);
@@ -96,6 +127,7 @@ class Main {
 
             addPanel.setVisible(true);
         });
+
         removeButton.addActionListener(event -> {
             int selectedIndex = spendingList.getSelectedIndex();
             if (selectedIndex < 0 || selectedIndex >= spendings.size()) {
@@ -114,7 +146,28 @@ class Main {
             }
         });
         statisticButton.addActionListener(event -> {
-            // TO DO
+            if (spendings.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Statistics are not available because the list is empty.");
+                return;
+            }
+
+            double total = 0.0;
+            Spending mostExpensive = spendings.get(0);
+
+            for (Spending spending : spendings) {
+                total += spending.getAmount();
+
+                if (spending.getAmount() > mostExpensive.getAmount()) {
+                    mostExpensive = spending;
+                }
+            }
+
+            double average = total / spendings.size();
+
+            String message = "Number of spendings: " + spendings.size() + "\nTotal: " + total + "\nAverage: " + average
+                    + "\nMost expensive: " + mostExpensive;
+
+            JOptionPane.showMessageDialog(frame, message, "Spending statistics", JOptionPane.INFORMATION_MESSAGE);
         });
         loadButton.addActionListener(event -> {
             try {
@@ -145,6 +198,9 @@ class Main {
             } catch (Exception e) {
                 System.out.println("Error while loading spendings");
             }
+        });
+        saveButton.addActionListener(event -> {
+            // To do
         });
         frame.setVisible(true);
 
