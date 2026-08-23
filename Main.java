@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.File;
+import java.io.FileWriter;
 
 class Main {
     public static String fileName = "Spendings.txt";
@@ -38,7 +39,7 @@ class Main {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Personal-Spending-Tracker");
 
-        frame.setSize(700, 500);
+        frame.setSize(800, 500);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -200,7 +201,24 @@ class Main {
             }
         });
         saveButton.addActionListener(event -> {
-            // To do
+            try {
+                File file = new File(fileName);
+                FileWriter writer = new FileWriter(file);
+
+                for (Spending s : spendings) {
+                    // Собираем строку в точности так, как её ожидает loadButton (через ";")
+                    String line = s.getName() + ";" + s.getCategory() + ";" + s.getAmount();
+                    writer.write(line + "\n");
+                }
+
+                writer.close(); // Обязательно закрываем файл после цикла
+
+                JOptionPane.showMessageDialog(frame, "Spendings saved successfully!", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (Exception e) {
+                System.out.println("Error while saving spendings");
+            }
         });
         frame.setVisible(true);
 
