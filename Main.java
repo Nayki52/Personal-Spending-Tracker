@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -50,9 +51,9 @@ class Main {
         JList<String> spendingList = new JList<>(listModel);
         JPanel spendigsPanel = new JPanel();
         spendigsPanel.setLayout(new BoxLayout(spendigsPanel, BoxLayout.Y_AXIS));
-        JLabel spendingLabel = new JLabel("All Spendings");
+        JLabel spendingLabel = new JLabel("All Spendings", SwingConstants.CENTER);
         JScrollPane horizontalPane = new JScrollPane(spendingList);
-        spendigsPanel.add(spendingLabel);
+        frame.add(spendingLabel, BorderLayout.NORTH);
         spendigsPanel.add(horizontalPane);
         frame.add(spendigsPanel, BorderLayout.CENTER);
 
