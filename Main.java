@@ -4,15 +4,18 @@ import java.util.Scanner;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JList;
+import javax.swing.JTable;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
+import javax.swing.JList;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.File;
@@ -46,16 +49,41 @@ class Main {
 
         frame.setLayout(new BorderLayout());
 
-        DefaultListModel<String> listModel = new DefaultListModel<>();
+        String[] columns = { "Name", "Category", "Amount" };
 
-        JList<String> spendingList = new JList<>(listModel);
-        JPanel spendigsPanel = new JPanel();
-        spendigsPanel.setLayout(new BoxLayout(spendigsPanel, BoxLayout.Y_AXIS));
-        JLabel spendingLabel = new JLabel("All Spendings", SwingConstants.CENTER);
-        JScrollPane horizontalPane = new JScrollPane(spendingList);
-        frame.add(spendingLabel, BorderLayout.NORTH);
-        spendigsPanel.add(horizontalPane);
-        frame.add(spendigsPanel, BorderLayout.CENTER);
+        DefaultTableModel tableModel = new DefaultTableModel(columns, 0);
+
+        JTable spendingsTable = new JTable(tableModel);
+
+        spendingsTable.getColumnModel().getColumn(0).setCellRenderer(
+                new javax.swing.table.DefaultTableCellRenderer() {
+                    {
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                    }
+                });
+
+        spendingsTable.getColumnModel().getColumn(1).setCellRenderer(
+                new javax.swing.table.DefaultTableCellRenderer() {
+                    {
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                    }
+                });
+
+        spendingsTable.getColumnModel().getColumn(2).setCellRenderer(
+                new javax.swing.table.DefaultTableCellRenderer() {
+                    {
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                    }
+                });
+
+        ((javax.swing.table.DefaultTableCellRenderer) spendingsTable.getTableHeader().getDefaultRenderer())
+                .setHorizontalAlignment(SwingConstants.CENTER);
+        JScrollPane scrollPane = new JScrollPane(spendingsTable);
+
+        JLabel allSpendingLabel = new JLabel("All Spending", SwingConstants.CENTER);
+
+        frame.add(allSpendingLabel, BorderLayout.NORTH);
+        frame.add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonsPanel = new JPanel();
 
@@ -99,7 +127,11 @@ class Main {
                     if (amount > 0) {
                         Spending newSpending = new Spending(name, category, amount);
                         spendings.add(newSpending);
-                        listModel.addElement(newSpending.toString());
+                        tableModel.addRow(new Object[] {
+                                newSpending.getName(),
+                                newSpending.getCategory(),
+                                newSpending.getAmount()
+                        });
 
                         addPanel.dispose();
                     }
@@ -131,7 +163,7 @@ class Main {
         });
 
         removeButton.addActionListener(event -> {
-            int selectedIndex = spendingList.getSelectedIndex();
+            int selectedIndex = spendingsTable.getSelectedRow();
             if (selectedIndex < 0 || selectedIndex >= spendings.size()) {
                 JOptionPane.showMessageDialog(frame, "Make a selction first", "Selection neccessary",
                         JOptionPane.WARNING_MESSAGE);
@@ -143,7 +175,7 @@ class Main {
                 // реакция на то, что пользователь выбрал в окне
                 if (result == JOptionPane.YES_OPTION) {
                     spendings.remove(selectedIndex);
-                    listModel.remove(selectedIndex);
+                    tableModel.removeRow(selectedIndex);
                 }
             }
         });
@@ -191,8 +223,13 @@ class Main {
                             String category = parts[1];
                             double amount = Double.parseDouble(parts[2]);
                             Spending s = new Spending(name, category, amount);
-                            listModel.addElement(s.toString());
                             spendings.add(s);
+
+                            tableModel.addRow(new Object[] {
+                                    s.getName(),
+                                    s.getCategory(),
+                                    s.getAmount()
+                            });
                         }
 
                     }
